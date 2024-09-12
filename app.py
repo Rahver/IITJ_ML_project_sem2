@@ -15,14 +15,14 @@ excluded_features = ['customerID', 'Churn']
 available_features = [col for col in df.columns if col not in excluded_features]
 
 # User feature selection
-st.title(Customer Churn Prediction)
-st.header(Select Features to Train the Model)
+st.title("Customer Churn Prediction")
+st.header("Select Features to Train the Model")
 
 selected_features = st.multiselect('Select features', available_features, default=['tenure', 'MonthlyCharges'])
 
 # Display snapshot of data based on selected features
-if selected_features
-    st.subheader(Data Snapshot)
+if selected_features:
+    st.subheader("Data Snapshot")
     st.write(df[selected_features + ['Churn']].head())
 
 # Separate target and features
@@ -30,9 +30,9 @@ target = 'Churn'
 X = df[selected_features]
 y = df[target]
 
-# Preprocessing Label encoding for categorical features
+# Preprocessing: Label encoding for categorical features
 label_encoders = {}
-for col in X.select_dtypes(include=['object']).columns
+for col in X.select_dtypes(include=['object']).columns:
     le = LabelEncoder()
     X[col] = le.fit_transform(X[col])
     label_encoders[col] = le
@@ -40,11 +40,11 @@ for col in X.select_dtypes(include=['object']).columns
 # Convert target variable 'Churn' from 'Yes', 'No' to 1, 0 using LabelEncoder
 y = LabelEncoder().fit_transform(y)
 
-# Split into traintest
+# Split into train/test
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Model training function
-def train_and_predict(X_train, y_train, X_test)
+def train_and_predict(X_train, y_train, X_test):
     predictions = {}
     accuracies = {}
     
@@ -75,40 +75,42 @@ def train_and_predict(X_train, y_train, X_test)
 model_predictions, model_accuracies = train_and_predict(X_train, y_train, X_test)
 
 # User input for new prediction
-st.header(Enter Values for Prediction)
+st.header("Enter Values for Prediction")
 
 # Create input fields for each selected feature
 user_input = {}
-for feature in selected_features
-    user_input[feature] = st.number_input(fEnter {feature}, value=float(df[feature].mean()))
+for feature in selected_features:
+    # Set default value to the mean of the column
+    default_value = float(df[feature].mean()) if df[feature].dtype != 'object' else 0.0
+    user_input[feature] = st.number_input(f"Enter {feature}", value=default_value)
 
 # Convert user input into a DataFrame
 user_df = pd.DataFrame([user_input])
 
 # Encode user input with the same label encoders
-for col, le in label_encoders.items()
-    if col in user_df.columns
+for col, le in label_encoders.items():
+    if col in user_df.columns:
         user_df[col] = le.transform(user_df[col])
 
 # Predict for user input
-st.subheader(Prediction for Entered Values)
+st.subheader("Prediction for Entered Values")
 
-if st.button('Predict Churn')
+if st.button('Predict Churn'):
     # Predict using all models
     lr_pred = model_predictions['Logistic Regression']
     rf_pred = model_predictions['Random Forest']
     dt_pred = model_predictions['Decision Tree']
     
     # Display individual model accuracies
-    st.write(fLogistic Regression Accuracy {model_accuracies['Logistic Regression']  100.2f}%)
-    st.write(fRandom Forest Accuracy {model_accuracies['Random Forest']  100.2f}%)
-    st.write(fDecision Tree Accuracy {model_accuracies['Decision Tree']  100.2f}%)
+    st.write(f"Logistic Regression Accuracy: {model_accuracies['Logistic Regression'] * 100:.2f}%")
+    st.write(f"Random Forest Accuracy: {model_accuracies['Random Forest'] * 100:.2f}%")
+    st.write(f"Decision Tree Accuracy: {model_accuracies['Decision Tree'] * 100:.2f}%")
     
     # Aggregate predictions from all models
     churn_votes = sum([lr_pred[0], rf_pred[0], dt_pred[0]])
-    final_prediction = Churn if churn_votes = 2 else No Churn
+    final_prediction = "Churn" if churn_votes >= 2 else "No Churn"
     
-    st.subheader(Final Aggregated Prediction)
-    st.write(f'Churn {final_prediction}')
+    st.subheader("Final Aggregated Prediction")
+    st.write(f'Churn: {final_prediction}')
 
-# To deploy streamlit run app.py
+# To deploy: streamlit run app.py
