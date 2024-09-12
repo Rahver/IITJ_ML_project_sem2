@@ -15,10 +15,19 @@ excluded_features = ['customerID', 'Churn']
 available_features = [col for col in df.columns if col not in excluded_features]
 
 # User feature selection
-st.title("Customer Churn Prediction")
+st.title("Customer Churn Prediction Model")
+
+st.write("""
+This ML Project by Rahul Verma-(G23AI2039), Vidyut Bhaskar-(G23AI2128), Atul Singh-(G23AI2104), Mayank Goyal-(G23AI2120), Suraj Mourya-(G23AI2116) allows you to predict customer churn based on selected features.
+
+Choose the features that you believe are most relevant to predicting whether a customer will churn.
+The model will use the selected features to train and provide a prediction based on your inputs. This will help the sales team to verify weather their prospect / potential customer is going to churn afer their first billing cycle.
+""")
+
 st.header("Select Features to Train the Model")
 
-selected_features = st.multiselect('Select features', available_features, default=['tenure', 'MonthlyCharges'])
+selected_features = st.multiselect('Select features', available_features, default=['gender', 'Contract
+'])
 
 # Display snapshot of data based on selected features
 if selected_features:
