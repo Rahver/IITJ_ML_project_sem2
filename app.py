@@ -28,6 +28,9 @@ for col in X.select_dtypes(include=['object']).columns:
     X[col] = le.fit_transform(X[col])
     label_encoders[col] = le
 
+# Convert target variable 'Churn' from 'Yes', 'No' to 1, 0 using LabelEncoder
+y = LabelEncoder().fit_transform(y)
+
 # Split into train/test
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
