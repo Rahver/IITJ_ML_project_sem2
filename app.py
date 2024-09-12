@@ -27,7 +27,7 @@ The model will use the selected features to train and provide a prediction based
 
 st.header("Select Features to Train the Model")
 
-selected_features = st.multiselect('Select features', available_features, default=['gender', 'Contract'])
+selected_features = st.multiselect('Select features', available_features, default=['MonthlyCharges','OnlineSecurity','Contract','PaperlessBilling'])
 
 # Display snapshot of data based on selected features
 if selected_features:
@@ -132,6 +132,6 @@ if st.button('Predict Churn'):
     final_prediction = "Churn" if churn_votes >= 2 else "No Churn"
     
     st.subheader("Final Aggregated Prediction")
-    st.write(f'Churn: {final_prediction}')
+    st.write(f'Final Prediction: Custommer will {final_prediction}')
 
 # To deploy: streamlit run app.py
