@@ -126,9 +126,9 @@ if st.button('Predict Churn'):
     st.write(f"Customer will   Logistic Regression Accuracy: {model_accuracies['Logistic Regression'] * 100:.2f}%")
     st.write(f"Random Forest Accuracy: {model_accuracies['Random Forest'] * 100:.2f}%")
     st.write(f"Decision Tree Accuracy: {model_accuracies['Decision Tree'] * 100:.2f}%")
-    st.write(f"{[lr_pred[0]}%")
-    st.write(f"{[rf_pred[0]}%")
-    st.write(f"{[dt_pred[0]}%")
+    st.write(f"{lr_pred[0]}%")
+    st.write(f"{rf_pred[0]}%")
+    st.write(f"{dt_pred[0]}%")
     # Aggregate predictions from all models
     churn_votes = sum([lr_pred[0], rf_pred[0], dt_pred[0]])
     final_prediction = "Churn" if churn_votes > 1 else "Not Churn"
