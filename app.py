@@ -27,7 +27,7 @@ The model will use the selected features to train and provide a prediction based
 
 st.header("Select Features to Train the Model")
 
-selected_features = st.multiselect('Select features', available_features, default=['gender','Partner','Dependents','PhoneService','InternetService','OnlineSecurity','OnlineBackup','DeviceProtection','TechSupport','StreamingTV','StreamingMovies','Contract','PaperlessBilling','PaymentMethod','MonthlyCharges'])
+selected_features = st.multiselect('Select features', available_features, default=['gender', 'Partner', 'Dependents', 'PhoneService', 'InternetService', 'OnlineSecurity', 'OnlineBackup', 'DeviceProtection', 'TechSupport', 'StreamingTV', 'StreamingMovies', 'Contract', 'PaperlessBilling', 'PaymentMethod', 'MonthlyCharges'])
 
 # Display snapshot of data based on selected features
 if selected_features:
@@ -61,21 +61,21 @@ def train_and_predict(X_train, y_train, X_test):
     lr_model = LogisticRegression()
     lr_model.fit(X_train, y_train)
     y_pred_lr = lr_model.predict(X_test)
-    predictions['Logistic Regression'] = y_pred_lr
+    predictions['Logistic Regression'] = lr_model
     accuracies['Logistic Regression'] = accuracy_score(y_test, y_pred_lr)
     
     # Random Forest
     rf_model = RandomForestClassifier()
     rf_model.fit(X_train, y_train)
     y_pred_rf = rf_model.predict(X_test)
-    predictions['Random Forest'] = y_pred_rf
+    predictions['Random Forest'] = rf_model
     accuracies['Random Forest'] = accuracy_score(y_test, y_pred_rf)
     
     # Decision Tree
     dt_model = DecisionTreeClassifier()
     dt_model.fit(X_train, y_train)
     y_pred_dt = dt_model.predict(X_test)
-    predictions['Decision Tree'] = y_pred_dt
+    predictions['Decision Tree'] = dt_model
     accuracies['Decision Tree'] = accuracy_score(y_test, y_pred_dt)
 
     return predictions, accuracies
@@ -110,29 +110,26 @@ user_df = pd.DataFrame([user_input])
 # Encode user input with the same label encoders
 for col, le in label_encoders.items():
     if col in user_df.columns:
-        # Ensure the encoder does not fail with unseen values by using .fit() on the user_df too
         user_df[col] = le.transform(user_df[col].astype(str).values)
 
 # Predict for user input
 st.subheader("Prediction for Entered Values")
 
 if st.button('Predict Churn'):
-    # Predict using all models
-    lr_pred = model_predictions['Logistic Regression']
-    rf_pred = model_predictions['Random Forest']
-    dt_pred = model_predictions['Decision Tree']
+    # Predict using the models for the new user input
+    lr_pred = model_predictions['Logistic Regression'].predict(user_df)
+    rf_pred = model_predictions['Random Forest'].predict(user_df)
+    dt_pred = model_predictions['Decision Tree'].predict(user_df)
     
-    # Display individual model accuracies
-    st.write(f"Customer will   Logistic Regression Accuracy: {model_accuracies['Logistic Regression'] * 100:.2f}%")
-    st.write(f"Random Forest Accuracy: {model_accuracies['Random Forest'] * 100:.2f}%")
-    st.write(f"Decision Tree Accuracy: {model_accuracies['Decision Tree'] * 100:.2f}%")
-    st.write(f"{lr_pred}")
-    st.write(f"{rf_pred[1]}")
-    st.write(f"{dt_pred[2]}")
+    # Display individual model predictions and their accuracies
+    st.write(f"Logistic Regression Prediction: {'Churn' if lr_pred[0] == 1 else 'Not Churn'} (Accuracy: {model_accuracies['Logistic Regression'] * 100:.2f}%)")
+    st.write(f"Random Forest Prediction: {'Churn' if rf_pred[0] == 1 else 'Not Churn'} (Accuracy: {model_accuracies['Random Forest'] * 100:.2f}%)")
+    st.write(f"Decision Tree Prediction: {'Churn' if dt_pred[0] == 1 else 'Not Churn'} (Accuracy: {model_accuracies['Decision Tree'] * 100:.2f}%)")
+
     # Aggregate predictions from all models
     churn_votes = sum([lr_pred[0], rf_pred[0], dt_pred[0]])
     final_prediction = "Churn" if churn_votes > 1 else "Not Churn"
-    st.subheader("Final Aggregated Prediction")
-    st.write(f'Final Prediction: Custommer will {final_prediction}')
 
-# To deploy: streamlit run app.py
+    # Display final aggregated prediction
+    st.subheader("Final Aggregated Prediction")
+    st.write(f'Final Prediction: Customer will {final_prediction}')
