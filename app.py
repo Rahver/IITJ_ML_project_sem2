@@ -26,8 +26,7 @@ The model will use the selected features to train and provide a prediction based
 
 st.header("Select Features to Train the Model")
 
-selected_features = st.multiselect('Select features', available_features, default=['gender', 'Contract
-'])
+selected_features = st.multiselect('Select features', available_features, default=['gender','Contract'])
 
 # Display snapshot of data based on selected features
 if selected_features:
