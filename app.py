@@ -129,7 +129,7 @@ if st.button('Predict Churn'):
     
     # Aggregate predictions from all models
     churn_votes = sum([lr_pred[0], rf_pred[0], dt_pred[0]])
-    final_prediction = "Churn" if churn_votes >= 2 else "No Churn"
+    final_prediction = "Churn" if churn_votes >= 2 else "Not Churn"
     
     st.subheader("Final Aggregated Prediction")
     st.write(f'Final Prediction: Custommer will {final_prediction}')

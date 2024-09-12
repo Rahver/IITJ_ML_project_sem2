@@ -1,11 +1,11 @@
 customerID,gender,Partner,Dependents,PhoneService,InternetService,OnlineSecurity,OnlineBackup,DeviceProtection,TechSupport,StreamingTV,StreamingMovies,Contract,PaperlessBilling,PaymentMethod,MonthlyCharges,Churn
+8665-UTDHZ,Male,Yes,Yes,No,DSL,No,Yes,No,No,No,No,Month-to-month,No,Electronic check,400 INR,Yes
 2775-SEFEE,Male,No,Yes,Yes,DSL,Yes,Yes,No,Yes,No,No,Two year,Yes,Bank transfer (automatic),700 INR,No
+5919-TMRGD,Female,No,Yes,Yes,Fiber optic,No,No,No,No,Yes,No,Month-to-month,Yes,Electronic check,800 INR,Yes
 7590-VHVEG,Female,Yes,No,No,DSL,No,Yes,No,No,No,No,Month-to-month,Yes,Electronic check,300 INR,No
 1066-JKSGK,Male,No,No,Yes,No,No,No,No,No,No,No,Month-to-month,No,Mailed check,300 INR,No
-8665-UTDHZ,Male,Yes,Yes,No,DSL,No,Yes,No,No,No,No,Month-to-month,No,Electronic check,400 INR,Yes
 7310-EGVHZ,Male,No,No,Yes,No,No,No,No,No,No,No,Month-to-month,No,Bank transfer (automatic),300 INR,No
 2273-QCKXA,Male,No,No,Yes,DSL,No,No,No,Yes,No,No,Month-to-month,No,Mailed check,500 INR,No
-5919-TMRGD,Female,No,Yes,Yes,Fiber optic,No,No,No,No,Yes,No,Month-to-month,Yes,Electronic check,800 INR,Yes
 6380-ARCEH,Male,No,No,Yes,No,No,No,No,No,No,No,Month-to-month,No,Mailed check,300 INR,No
 3679-XASPY,Female,Yes,Yes,Yes,No,No,No,No,No,No,No,Month-to-month,No,Electronic check,200 INR,No
 3930-ZGWVE,Male,No,No,Yes,No,No,No,No,No,No,No,Month-to-month,No,Mailed check,200 INR,No
