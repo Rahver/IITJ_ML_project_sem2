@@ -80,9 +80,15 @@ st.header("Enter Values for Prediction")
 # Create input fields for each selected feature
 user_input = {}
 for feature in selected_features:
-    # Set default value to the mean of the column
-    default_value = float(df[feature].mean()) if df[feature].dtype != 'object' else 0.0
-    user_input[feature] = st.number_input(f"Enter {feature}", value=default_value)
+    if df[feature].dtype == 'object':
+        # For categorical features, create a dropdown with unique values
+        unique_vals = df[feature].unique().tolist()
+        user_input[feature] = st.selectbox(f"Select {feature}", unique_vals)
+    else:
+        # For numerical features, use a slider or number input
+        min_val = float(df[feature].min())
+        max_val = float(df[feature].max())
+        user_input[feature] = st.slider(f"Enter {feature}", min_val, max_val, value=(min_val + max_val) / 2)
 
 # Convert user input into a DataFrame
 user_df = pd.DataFrame([user_input])
@@ -90,7 +96,8 @@ user_df = pd.DataFrame([user_input])
 # Encode user input with the same label encoders
 for col, le in label_encoders.items():
     if col in user_df.columns:
-        user_df[col] = le.transform(user_df[col])
+        # Ensure the encoder does not fail with unseen values by using .fit() on the user_df too
+        user_df[col] = le.transform(user_df[col].astype(str).values)
 
 # Predict for user input
 st.subheader("Prediction for Entered Values")
