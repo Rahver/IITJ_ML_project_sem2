@@ -5,8 +5,6 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.neural_network import MLPClassifier
-from xgboost import XGBClassifier
 from sklearn.metrics import accuracy_score
 
 # Load dataset
@@ -51,7 +49,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 # User selects models to train
 st.header("Select machine learning models to apply")
-model_options = ['Logistic Regression', 'Random Forest', 'XGBoost', 'Decision Tree', 'Neural Network']
+model_options = ['Logistic Regression', 'Random Forest', 'Decision Tree']
 selected_models = st.multiselect('Choose Models', model_options, default=['Logistic Regression', 'Random Forest'])
 
 # Model initialization and training
@@ -73,26 +71,12 @@ def train_and_predict(models, X_train, y_train, X_test):
         predictions['Random Forest'] = y_pred_rf
         trained_models['Random Forest'] = rf_model
     
-    if 'XGBoost' in models:
-        xgb_model = XGBClassifier()
-        xgb_model.fit(X_train, y_train)
-        y_pred_xgb = xgb_model.predict(X_test)
-        predictions['XGBoost'] = y_pred_xgb
-        trained_models['XGBoost'] = xgb_model
-
     if 'Decision Tree' in models:
         dt_model = DecisionTreeClassifier()
         dt_model.fit(X_train, y_train)
         y_pred_dt = dt_model.predict(X_test)
         predictions['Decision Tree'] = y_pred_dt
         trained_models['Decision Tree'] = dt_model
-
-    if 'Neural Network' in models:
-        nn_model = MLPClassifier(max_iter=1000)
-        nn_model.fit(X_train, y_train)
-        y_pred_nn = nn_model.predict(X_test)
-        predictions['Neural Network'] = y_pred_nn
-        trained_models['Neural Network'] = nn_model
 
     return predictions, trained_models
 
@@ -120,9 +104,12 @@ if st.button('Train and Predict'):
     st.subheader("Predict Churn for Custom Input")
     custom_input = []
     for feature in selected_features:
-        # Get user input for each selected feature
-        user_input = st.number_input(f"Enter value for {feature}", float(df[feature].min()), float(df[feature].max()))
-        custom_input.append(user_input)
+        # Provide example values from the dataset
+        example_values = df[feature].dropna().sample(3).tolist()
+        example_text = ", ".join(map(str, example_values))
+        # Get user input for each selected feature without min/max constraints
+        user_input = st.text_input(f"Enter value for {feature} (e.g., {example_text})", value="")
+        custom_input.append(float(user_input))
     
     # Encode categorical inputs
     custom_input_df = pd.DataFrame([custom_input], columns=selected_features)
