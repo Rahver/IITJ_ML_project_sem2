@@ -40,9 +40,9 @@ for col in X.select_dtypes(include=['object']).columns:
 # Convert target variable 'Churn' from 'Yes', 'No' to 1, 0 using LabelEncoder
 y = LabelEncoder().fit_transform(y)
 
-# Feature scaling
+# Feature scaling for numerical features
 scaler = StandardScaler()
-X = scaler.fit_transform(X)
+X[X.select_dtypes(include=['float64', 'int64']).columns] = scaler.fit_transform(X.select_dtypes(include=['float64', 'int64']))
 
 # Split into train/test
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -107,23 +107,34 @@ if st.button('Train and Predict'):
         # Provide example values from the dataset
         example_values = df[feature].dropna().sample(3).tolist()
         example_text = ", ".join(map(str, example_values))
-        # Get user input for each selected feature without min/max constraints
-        user_input = st.text_input(f"Enter value for {feature} (e.g., {example_text})", value="")
-        custom_input.append(float(user_input))
-    
-    # Encode categorical inputs
-    custom_input_df = pd.DataFrame([custom_input], columns=selected_features)
-    for col in custom_input_df.select_dtypes(include=['object']).columns:
-        le = label_encoders[col]
-        custom_input_df[col] = le.transform(custom_input_df[col])
+        
+        # Check if the feature is numerical or categorical
+        if df[feature].dtype in ['float64', 'int64']:
+            # For numerical features, accept input as a number
+            user_input = st.text_input(f"Enter value for {feature} (e.g., {example_text})", value="")
+            custom_input.append(float(user_input))
+        else:
+            # For categorical features, provide example and convert input to numerical using LabelEncoder
+            user_input = st.text_input(f"Enter value for {feature} (e.g., {example_text})", value="")
+            le = label_encoders[feature]
+            if user_input in le.classes_:
+                encoded_value = le.transform([user_input])[0]
+                custom_input.append(encoded_value)
+            else:
+                st.warning(f"Invalid value entered for {feature}. Please enter one of: {', '.join(le.classes_)}")
+                st.stop()
 
-    # Scale the custom input
-    custom_input_scaled = scaler.transform(custom_input_df)
-    
+    # Convert custom input to DataFrame
+    custom_input_df = pd.DataFrame([custom_input], columns=selected_features)
+
+    # Scale the numerical input features
+    custom_input_df[custom_input_df.select_dtypes(include=['float64', 'int64']).columns] = scaler.transform(
+        custom_input_df.select_dtypes(include=['float64', 'int64']))
+
     # Predict using the trained models
     custom_predictions = {}
     for model_name, model in trained_models.items():
-        custom_predictions[model_name] = model.predict(custom_input_scaled)[0]
+        custom_predictions[model_name] = model.predict(custom_input_df)[0]
 
     # Show custom prediction results
     st.subheader("Custom Input Prediction Results")
